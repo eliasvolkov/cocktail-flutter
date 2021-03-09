@@ -1,7 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-
-// ignore: import_of_legacy_library_into_null_safe
 import 'models/src/model/cocktail.dart';
 import 'models/src/model/ingredient_definition.dart';
 
@@ -16,11 +14,6 @@ class CocktailDetailPage extends StatelessWidget {
   final Cocktail cocktail;
 
   void init() async {
-    // try {
-    //   await FlutterStatusbarcolor.setStatusBarColor(Colors.white);
-    // } catch (error) {
-    //   print(error);
-    // }
     print('hello');
   }
 
@@ -28,20 +21,47 @@ class CocktailDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final List<String> instructions = cocktail.instruction.split('\n');
-    return SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black,
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black,
+            ),
+            child: Column(
+              children: [
+                _heroWidget(size),
+                _cocktailInfo(cocktail),
+                _cocktailIngredients(cocktail),
+                _cocktailInstruction(instructions),
+              ],
+            ),
+          ),
         ),
-        child: Column(
+        _header(size),
+      ],
+    );
+  }
+
+  Positioned _header(Size size) {
+    return Positioned(
+      top: 30,
+      width: size.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FutureBuilder(builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              return Text('Loading');
-            }),
-            _heroWidget(size),
-            _cocktailInfo(cocktail),
-            _cocktailIngredients(cocktail),
-            _cocktailInstruction(instructions),
+            GestureDetector(
+              onTap: () {
+                print('My friend');
+              },
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
+            Icon(Icons.open_in_browser, color: Colors.white),
           ],
         ),
       ),
@@ -50,31 +70,10 @@ class CocktailDetailPage extends StatelessWidget {
 }
 
 Widget _heroWidget(Size size) {
-  return Stack(
-    children: [
-      Image.asset(
-        'assets/coctail.png',
-        width: size.width,
-        fit: BoxFit.contain,
-      ),
-      Positioned(
-        top: 30,
-        width: size.width,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-              Icon(Icons.open_in_browser, color: Colors.white),
-            ],
-          ),
-        ),
-      )
-    ],
+  return Image.asset(
+    'assets/coctail.png',
+    width: size.width,
+    fit: BoxFit.contain,
   );
 }
 
