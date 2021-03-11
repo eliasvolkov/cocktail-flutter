@@ -44,5 +44,5 @@ class CocktailCategory {
   String toString() => 'CocktailCategory{value: $value, name: $name}';
 
   static CocktailCategory parse(String raw) =>
-      values.firstWhere((element) => element.value.toLowerCase() == raw.toLowerCase(), orElse: () => null as CocktailCategory);
+      values.firstWhere((element) => element.value.toLowerCase() == raw.toLowerCase(), orElse: () => null);
 }
