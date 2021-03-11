@@ -6,6 +6,9 @@ class FilterScreen extends StatefulWidget {
   _FilterScreenState createState() => _FilterScreenState();
 }
 
+final ValueNotifier<CocktailCategory> _category =
+    ValueNotifier(CocktailCategory.values.first);
+
 class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
@@ -30,10 +33,69 @@ class _FilterScreenState extends State<FilterScreen> {
             margin: const EdgeInsets.only(top: 22),
             child: CategoryList(),
           ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              margin: const EdgeInsets.only(top: 22),
+              child: _buildCocktailList(),
+            ),
+          ),
         ],
       ),
     );
   }
+}
+
+Widget _buildCocktailList() {
+  return ValueListenableBuilder(
+      valueListenable: _category,
+      builder: (BuildContext context, CocktailCategory value, Widget child) {
+        return FutureBuilder<Iterable<CocktailDefinition>>(
+            future: AsyncCocktailRepository().fetchCocktailsByCocktailCategory(_category.value),
+            builder: (BuildContext context, snapshot) {
+          if(snapshot.hasData){
+            var cocktailItems = snapshot.data;
+            var gridItems =
+            cocktailItems.map((item) => _buildGridItem(item)).toList();
+            return GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 1.0,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+              children: gridItems,
+            );
+          }
+          if(snapshot.hasError){
+            return Center(child: Text(
+              'Сообщение об ошибке',
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                color: Color(0xffEAEAEA),
+              ),
+            ),);
+          }
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/shaker.png",
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 9),
+                  child: const Text(
+                    'Поиск...',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xffEAEAEA),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+      });
 }
 
 class CategoryList extends StatefulWidget {
@@ -57,6 +119,7 @@ class _CategoryListState extends State<CategoryList> {
               onTap: () {
                 setState(() {
                   _activeCategory = i;
+                  _category.value = CocktailCategory.values.toList()[i];
                 });
               },
             );
@@ -103,4 +166,50 @@ class _CategoryListState extends State<CategoryList> {
       borderRadius: BorderRadius.circular(30.0),
     );
   }
+}
+
+
+Widget _buildGridItem(CocktailDefinition cocktail) {
+  return Container(
+    child: Stack(
+      children: [
+        Image.network(cocktail.drinkThumbUrl),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Container(
+            padding: const EdgeInsets.only(left: 16, top: 13),
+            width: 160,
+            height: 94,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  cocktail.name,
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 16, top: 6),
+                  margin: const EdgeInsets.only(top: 7),
+                  child: Text(
+                    cocktail.id,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 10.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
