@@ -35,7 +35,7 @@ class _FilterScreenState extends State<FilterScreen> {
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.only(left: 8, right: 8),
+              padding: const EdgeInsets.only(left: 26, right: 26),
               margin: const EdgeInsets.only(top: 22),
               child: _buildCocktailList(),
             ),
@@ -59,6 +59,7 @@ Widget _buildCocktailList() {
                 var gridItems =
                     cocktailItems.map((item) => _buildGridItem(item)).toList();
                 return GridView.count(
+                  padding: EdgeInsets.all(0.0),
                   crossAxisCount: 2,
                   childAspectRatio: 1.0,
                   mainAxisSpacing: 8.0,
