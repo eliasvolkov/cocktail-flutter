@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:riverpod_app/models/src/dto/cocktail_definition_dto.dart';
+import '../dto/cocktail_definition_dto.dart';
 
 import '../dto/ingredient_dto.dart';
 
