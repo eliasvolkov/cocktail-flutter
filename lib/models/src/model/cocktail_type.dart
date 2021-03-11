@@ -23,9 +23,7 @@ class CocktailType {
   @override
   String toString() => 'CocktailType{value: $value, name: $name}';
 
-  ///
-  /// Show toString() method using in debug session
-  ///
-  // static CocktailType parse(String raw) =>
-  //     values.firstWhere((element) => element.value.toLowerCase() == raw.toLowerCase(), orElse: () => null);
+
+  static CocktailType parse(String raw) =>
+      values.firstWhere((element) => element.value.toLowerCase() == raw.toLowerCase(), orElse: () => null as CocktailType);
 }

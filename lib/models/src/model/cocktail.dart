@@ -95,14 +95,14 @@ class Cocktail {
   final bool isFavourite;
 
   Cocktail({
-    required this.id,
-    required this.name,
-    required this.instruction,
-    required this.category,
-    required this.glassType,
-    required this.cocktailType,
-    required this.ingredients,
-    required this.drinkThumbUrl,
-    required this.isFavourite,
+     this.id,
+     this.name,
+     this.instruction,
+     this.category,
+     this.glassType,
+     this.cocktailType,
+     this.ingredients,
+     this.drinkThumbUrl,
+     this.isFavourite,
   });
 }

@@ -43,6 +43,6 @@ class CocktailCategory {
   @override
   String toString() => 'CocktailCategory{value: $value, name: $name}';
 
-  // static CocktailCategory parse(String raw) =>
-  //     values.firstWhere((element) => element.value.toLowerCase() == raw.toLowerCase(), orElse: () => null);
+  static CocktailCategory parse(String raw) =>
+      values.firstWhere((element) => element.value.toLowerCase() == raw.toLowerCase(), orElse: () => null as CocktailCategory);
 }

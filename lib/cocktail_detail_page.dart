@@ -1,45 +1,80 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'models/models.dart';
 import 'models/src/model/cocktail.dart';
 import 'models/src/model/ingredient_definition.dart';
 
-class CocktailDetailPage extends StatelessWidget {
-  CocktailDetailPage(
-    this.cocktail, {
-    Key? key,
-  }) {
-    init();
-  }
+class CocktailDetailPage extends StatefulWidget {
+  CocktailDetailPage(this.id);
 
-  final Cocktail cocktail;
+  final String id;
 
-  void init() async {
-    print('hello');
+  @override
+  _CocktailDetailPageState createState() => _CocktailDetailPageState();
+}
+
+class _CocktailDetailPageState extends State<CocktailDetailPage> {
+  Cocktail newCocktail;
+  final List<String> ids = ['11007', '11008', '11009'];
+  int index = 0;
+
+  void init(index) async {
+    try {
+      final cocktail =
+          await AsyncCocktailRepository().fetchCocktailDetails(ids[index]);
+      setState(() {
+        newCocktail = cocktail;
+      });
+
+      await FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+      // await
+    } catch (error) {
+      print(error);
+    }
   }
 
   @override
+  void initState() {
+    init(index);
+    print(newCocktail);
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final List<String> instructions = cocktail.instruction.split('\n');
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black,
-            ),
-            child: Column(
-              children: [
-                _heroWidget(size),
-                _cocktailInfo(cocktail),
-                _cocktailIngredients(cocktail),
-                _cocktailInstruction(instructions),
-              ],
+    if (newCocktail != null) {
+      final size = MediaQuery.of(context).size;
+      final List<String> instructions = newCocktail.instruction.split('\n');
+      return Stack(
+        children: [
+          SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black,
+              ),
+              child: Column(
+                children: [
+                  Image.network(newCocktail.drinkThumbUrl,
+                      width: size.width, fit: BoxFit.cover, height: size.height * 0.3,),
+
+                  // _heroWidget(size),
+                  _cocktailInfo(newCocktail),
+                  _cocktailIngredients(newCocktail),
+                  _cocktailInstruction(instructions),
+                ],
+              ),
             ),
           ),
-        ),
-        _header(size),
-      ],
+          _header(size),
+        ],
+      );
+    }
+
+    return Center(
+      child: CircularProgressIndicator(),
     );
   }
 
@@ -54,7 +89,14 @@ class CocktailDetailPage extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                print('My friend');
+                setState(() {
+                  if(index == ids.length - 1){
+                    index = 0;
+                  }else{
+                    index += 1;
+                  }
+                });
+                init(index);
               },
               child: Icon(
                 Icons.arrow_back,
@@ -109,7 +151,7 @@ Widget _cocktailInfo(Cocktail cocktail) {
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: Text(
-            'Id:12864',
+            'Id:${cocktail.id}',
             style: TextStyle(fontSize: 13, color: Color(0xff848396)),
           ),
         ),
@@ -225,6 +267,9 @@ Widget _cocktailInfoBadge(String text) {
 }
 
 Widget _ingredientItem(IngredientDefinition ingredient) {
+  if (ingredient == null) {
+    return null;
+  }
   return Container(
     margin: EdgeInsets.only(top: 16.0),
     child: Row(
@@ -236,7 +281,7 @@ Widget _ingredientItem(IngredientDefinition ingredient) {
                   fontSize: 14,
                   decoration: TextDecoration.underline,
                 ))),
-        Text(ingredient.measure,
+        Text(ingredient.measure ?? '',
             style: TextStyle(
               color: Colors.white,
               fontSize: 14,

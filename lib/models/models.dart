@@ -5,3 +5,4 @@ export 'src/model/glass_type.dart';
 export 'src/model/ingredient.dart';
 export 'src/model/ingredient_definition.dart';
 export 'src/repository/sync_cocktail_repository.dart';
+export 'src/repository/async_cocktail_repository.dart';
